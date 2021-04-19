@@ -7,12 +7,13 @@ pairs_all = ["1INCH/BTC", "AVA/BTC", "CELR/BTC", "DOCK/BTC", "FUN/BTC", "KAVA/BT
 
 # pairs_all = ["ETH/BTC"]
 
+
 def download_data(timeFrame):
     # os.system('source ./.env/bin/activate \n freqtrade download-data --days 20 -t 3d')
     os.system('freqtrade download-data --days 200 --data-format-ohlcv hdf5 -t ' + timeFrame)
 
 
-def run_sterategy(timeFrame):
+def run_sterategy(timeFrame, num_of_candles, strategy_num):
     buy_signals = []
     # Initialize empty configuration object
 
@@ -23,7 +24,7 @@ def run_sterategy(timeFrame):
     # Define some constants
     config["timeframe"] = timeFrame
     # Name of the strategy class
-    config["strategy"] = "Strategy001"
+    config["strategy"] = "Strategy00" + str(strategy_num)
     # Location of the data
     data_location = Path(config['user_data_dir'], 'data', 'binance')
     # Pair to analyze - Only use one pair here
@@ -49,8 +50,10 @@ def run_sterategy(timeFrame):
 
             # Load strategy using values set above
             from freqtrade.resolvers import StrategyResolver
-            strategy = StrategyResolver.load_strategy(config)
 
+            strategy = StrategyResolver.load_strategy(config)
+            strategy.timeframe = config["timeframe"]
+            strategy.startup_candle_count = num_of_candles
             # Generate buy/sell signals using strategy
 
             df = strategy.analyze_ticker(candles, {'pair': pair})
@@ -66,12 +69,18 @@ def run_sterategy(timeFrame):
     return buy_signals
 
 
-def main_function(timeFrame):
+def main_function(timeFrame, num_of_candles, strategy_num):
     download_data(timeFrame)
-    return run_sterategy(timeFrame)
+    return run_sterategy(timeFrame, num_of_candles, strategy_num)
 
 
 if __name__ == '__main__':
     timeFrame = '3d'
-    download_data(timeFrame)
-    run_sterategy(timeFrame)
+    num_of_candles = 2
+    strategy_num = 2
+    # download_data(timeFrame)
+    print(run_sterategy(timeFrame, num_of_candles, strategy_num))
+    # ['1INCH/BTC', 'DOGE/BTC', 'DOT/BTC', 'BAND/BTC', 'DREP/BTC', 'TNB/BTC', 'WNXM/BTC', 'EASY/BTC', 'NEO/BTC',
+    #  'BCD/BTC', 'LINK/BTC', 'NKN/BTC', 'WRX/BTC', 'BCH/BTC', 'EGLD/BTC', 'NMR/BTC', 'COMP/BTC', 'XLM/BTC', 'XMR/BTC',
+    #  'EOS/BTC', 'LTC/BTC', 'XRP/BTC', 'SRM/BTC', 'XTZ/BTC', 'ETC/BTC', 'TWT/BTC', 'ETH/BTC', 'UMA/BTC', 'YFII/BTC',
+    #  'UNI/BTC', 'YFI/BTC', 'DASH/BTC', 'ZEC/BTC', 'INJ/BTC', 'ZEN/BTC', 'MITH/BTC', 'ATOM/BTC', 'MKR/BTC', 'CELO/BTC']

@@ -13,6 +13,7 @@ class Buy(Resource):
         parser.add_argument('ema', required=True)  # add args
         parser.add_argument('timeFrame', required=True)
         parser.add_argument('numOfCandles', required=True)
+        parser.add_argument('strategy_num', required=True)
 
         args = parser.parse_args()  # parse arguments to dictionary
 
@@ -23,7 +24,7 @@ class Buy(Resource):
         #     'city': args['numOfCandles'],
         #     'locations': [[]]
         # })
-        res = run_strategy.main_function(args['timeFrame'])
+        res = run_strategy.main_function(args['timeFrame'], args['numOfCandles'], args['strategy_num'])
         return {'buy': res}, 200  # return data with 200 OK
 
 

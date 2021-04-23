@@ -19,15 +19,12 @@ class Strategy002(IStrategy):
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {
-        "60":  0.01,
-        "30":  0.03,
-        "20":  0.04,
-        "0":  0.05
+        "10": -1
     }
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
-    stoploss = -0.10
+    stoploss = -100
 
     # Optimal timeframe for the strategy
     timeframe = '3d'
@@ -115,5 +112,5 @@ class Strategy002(IStrategy):
                 (dataframe['ha_close'] < dataframe['ema13']) &  # Guard: ema13 greater than open price
                 (dataframe['ha_open'] > dataframe['ema13'])  # Guard: ema13 smaller than close price
             ),
-            'sell'] = 1
+            'sell'] = 0
         return dataframe

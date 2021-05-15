@@ -119,7 +119,7 @@ class StrategySell(IStrategy):
         dataframe.loc[
             (
                 (dataframe['ha_close_long'] >= (1.7 * dataframe['ha_open_long'])) &
-                ((dataframe['ha_close'] >= (1.1 * dataframe['ha_open'])) or (dataframe['ha_close'] <= (1.1 * dataframe['ha_open'])))
+                ((dataframe['ha_close'] >= (1.1 * dataframe['ha_open'])) | (dataframe['ha_close'] <= (1.1 * dataframe['ha_open'])))
             ),
             'buy'] = 1
 

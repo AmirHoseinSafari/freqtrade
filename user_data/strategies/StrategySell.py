@@ -14,9 +14,9 @@ How to use?
 
 source ./.env/bin/activate
 
-freqtrade download-data -t 5m --timerange=20180131-20181201
+freqtrade download-data -t 5m --timerange=20180101-
 
-freqtrade backtesting --strategy StrategySell --timeframe 5m --timerange=20180131-20181201
+freqtrade backtesting --strategy StrategySell --timeframe 5m --timerange=20180101-
 """
 
 
@@ -105,6 +105,8 @@ class StrategySell(IStrategy):
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['ha_low'] = heikinashi['low']
         dataframe['ha_high'] = heikinashi['high']
+        dataframe['ha_open'] = heikinashi['open']
+        dataframe['ha_close'] = heikinashi['close']
 
         return dataframe
 
@@ -116,8 +118,8 @@ class StrategySell(IStrategy):
         """
         dataframe.loc[
             (
-                (dataframe['ha_close_long'] >= (1.7 * dataframe['ha_open_long'].shift(1))) &
-                ((dataframe['ha_high'] - dataframe['ha_low']) >= (0.1 * abs(dataframe['ha_close_long'] - dataframe['ha_open_long'])))
+                (dataframe['ha_close_long'] >= (1.7 * dataframe['ha_open_long'])) &
+                ((dataframe['ha_close'] >= (1.1 * dataframe['ha_open'])) or (dataframe['ha_close'] <= (1.1 * dataframe['ha_open'])))
             ),
             'buy'] = 1
 

@@ -16,7 +16,7 @@ class Strategy005(IStrategy):
     > python3 ./freqtrade/main.py -s Strategy001
     """
 
-    mr_3day = 9 * 24 * 60
+    mr_3day = 3 * 24 * 60
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi"
     minimal_roi = {

@@ -4,12 +4,7 @@ import json
 
 time_frame = "3d"
 strategy1 = "Strategy005"
-# strategy2 = "StrategySell"
-
-
-# date_times = ["20190116-20190501", "20190501-20191001", "20191001-20191229", "20200101-20200430", "20200101-20200130",
-#               "20200201-20200229", "20200301-20200330", "20200401-20200430", "20200501-20200830", "20200501-20200530",
-#               "20200601-20200630", "20200901-20201230", "20210101-20210515", "20210201-20210330", "20210301-20210430"]
+date_times = ["20190116-20190501"]
 
 
 def hasNumbers(inputString):
@@ -17,23 +12,18 @@ def hasNumbers(inputString):
 
 
 def download_run_strategy():
-    date_times = ["20190116-20190501", "20190501-20191001", "20191001-20191229", "20200101-20200430", "20200101-20200130",
-                  "20200201-20200229", "20200301-20200330", "20200401-20200430", "20200501-20200830", "20200501-20200530",
-                  "20200601-20200630", "20200901-20201230", "20210101-20210515", "20210201-20210330", "20210301-20210430",
-                  "20180116-20180501", "20180501-20181001", "20181001-20181229", "20210101-",
-                  "20210201-", "20190301-20190330", "20190401-20190430", "20191201-20200830"
-                  ]
-
+    # date_times = ["20190116-20190501", "20190501-20191001", "20191001-20191229", "20200101-20200430", "20200101-20200130",
+                  # "20200201-20200229", "20200301-20200330", "20200401-20200430", "20200501-20200830", "20200501-20200530",
+                  # "20200601-20200630", "20200901-20201230", "20210101-20210515", "20210201-20210330", "20210301-20210430",
+                  # "20180116-20180501", "20180501-20181001", "20181001-20181229", "20210101-",
+                  # "20210201-", "20190301-20190330", "20190401-20190430", "20191201-20200830"
+                  # ]
     for i in range(0, len(date_times)):
-        # os.system("freqtrade download-data -t " + time_frame + " --timerange=" + date_times[i])
+        os.system("freqtrade download-data -t " + time_frame + " --timerange=" + date_times[i])
 
         os.system(
             "freqtrade backtesting --strategy " + strategy1 + " --timeframe " + time_frame + " --timerange=" + date_times[i]
-            + " --export trade --export-filename=user_data/backtest_results/" + strategy1 + "_9_" + date_times[i] + ".json")
-
-        # os.system(
-        #     "freqtrade backtesting --strategy " + strategy2 + " --timeframe " + time_frame + " --timerange=" + date_times[i]
-        #     + " --export trade --export-filename=user_data/backtest_results/" + strategy2 + "_" + date_times[i] + ".json")
+            + " --export trade --export-filename=user_data/backtest_results/" + strategy1 + "_" + date_times[i] + ".json")
 
 
 def analyze_json():
@@ -46,17 +36,20 @@ def analyze_json():
     files = sorted(files)
     for i in range(0, len(files)):
         tmp = files[i].split("_")
-        if tmp[0] != "Strategy005":
+        if tmp[0] != strategy1:
             continue
         with open('/Users/amir/PycharmProjects/freqtrade_amir/user_data/backtest_results/' + files[i]) as f:
             data = json.load(f)
 
         data_dict = data
-        print(files[i])
+        file_detail = files[i].split("_")
+        data_detail = file_detail[1].split("-")
+        print("Strategy: ", file_detail[0], "from: ", data_detail[0], "to: ", data_detail[1])
         profit = data_dict['strategy_comparison'][0]["profit_total"]
-        print(data_dict['strategy']['Strategy005']['market_change'])
+        print("market_change", data_dict['strategy']['Strategy005']['market_change'])
         output = f"{profit:.9f}"
-        print(output)
+        print("profit: ", output)
+        print("_________________________________")
 
 
 def analyze_json_diff_days():
@@ -171,6 +164,14 @@ def analyze_json_diff_days():
 
 
 if __name__ == '__main__':
-    # download_run_strategy()
+    print("type strategy name: (Ex: Strategy005)")
+    strategy1 = input()
+    print("type time_frame: (Ex: 3d)")
+    time_frame = input()
+    print("type date-time: (ex: 20190116-20190501)")
+    date_times = []
+    date_times.append(input())
+
+    download_run_strategy()
     analyze_json()
     # analyze_json_diff_days()
